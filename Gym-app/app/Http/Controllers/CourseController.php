@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Models\User;
 use App\Http\Requests\StoreCourseRequest;
 use App\Http\Requests\UpdateCourseRequest;
 use Illuminate\Support\Facades\Auth;
@@ -21,13 +22,17 @@ class CourseController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-        $courses = Course::with('activities')->where('user_id', Auth::user()->id)->get();
-        //return   $courses;
+    // gli amministrtori vedranno tutte le prenotazioni, gli utenti invece solo quelle connesse ad essi
+    {  if (Auth::user()->role == 'admin') {
+        $courses = Course::with('activities')->get();
+        
         return view('webapp.homepage', ['courses' => $courses]);
-        // Se stai restituendo i corsi come JSON, non è necessario passarli alla vista.
-        // Se invece vuoi passare i corsi alla vista, rimuovi la riga precedente e aggiungi questa:
-        // return view('projects', ['courses' => $courses]);
+    } else {
+        $courses = Course::with('activities')->where('user_id', Auth::user()->id)->get();
+        return view('webapp.homepage', ['courses' => $courses]);
+    }
+        
+        
     }
     
 
@@ -58,8 +63,9 @@ class CourseController extends Controller
      * Display the specified resource.
      */
     public function show(Course $course)
-    {
-       
+    {   $courses = Course::with('activities')->where('user_id', Auth::user()->id)-> where('id', $course->id)->get();
+        return $courses;
+        
     }
 
     /**
@@ -80,7 +86,10 @@ class CourseController extends Controller
         $course['data_prenotazione'] = $request->data_prenotazione;
         $course ['fascia_oraria'] = $request->fascia_oraria;
         $course['updated_at'] = Carbon::now();
-
+         if (Auth::user()->role == 'admin'){$course['stato_richiesta'] = $request->stato_richiesta;}
+            
+        
+       
         $course->update();
         return redirect('/');
     }
@@ -94,5 +103,12 @@ class CourseController extends Controller
       
         return redirect('/'); 
         // return redirect('/'); 
+    }
+
+
+    public function approve(Course $course)
+    {  return dd ($course);
+        $course->update(['stato_richiesta' => 'Approvato']);
+        return redirect('/');
     }
 }

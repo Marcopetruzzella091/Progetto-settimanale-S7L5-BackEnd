@@ -10,6 +10,19 @@
     @method('PUT') <!-- Utilizza questa direttiva Blade per includere il metodo PUT -->
 
     <!-- Campo nascosto per l'ID del corso -->
+   @if(Auth::user()->role == 'admin')
+    <div class="form-group">
+        <label for="status">Stato:</label>
+        <select class="form-control" name="stato_richiesta" id="stato_richiesta">
+            <option value="approvato">Approvato</option>
+            <option value="in_attesa">In attesa di approvazione</option>
+            <option value="rifiutato">Rifiutato</option>
+        </select>
+    </div>
+ @endif
+
+
+
     <input type="hidden" name="corso_id" value="{{ $course->id }}">
 
     <div class="mb-3">

@@ -106,8 +106,13 @@
         </div>
     </div>
 </div>
+@if (Auth::user()->role == 'admin'){<h2 class="text-center my-5">Prenotazioni di tutti gli utenti</h2>}
+@else {
+    <h2 class="text-center my-5">Prenotazioni recenti</h2>
+}
+@endif
 
-<h2 class="text-center my-5">Le tue attività prenotate</h2>
+
 
 <ul>
     @if($courses)
@@ -118,41 +123,45 @@
         @endforeach
     @endif
 
-    @if(count($courses) > 0)
+    @if(count($courses) > 0 )
     <table class="table">
-        <thead>
-            <tr>
-                <th>Corso</th>
-                <th>Sala</th>
-                <th>Stato richiesta</th>
-                <th>Data Prenotazione</th>
-                <th>Fascia oraria</th>
-                <th></th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($courses as $item)
-            <tr>
-                <td>{{ $item['nome_corso'] }}</td>
-                <td>{{ $item['numero_sala'] }}</td>
-                <td>{{ $item['stato_richiesta'] }}</td>
-                <td>{{ $item['data_prenotazione'] }}</td>
-                <td>{{ $item['fascia_oraria'] }}</td>
-                <td>
+    <thead>
+        <tr>
+            <th>Corso</th>
+            <th>Sala</th>
+            <th>Stato richiesta</th>
+            <th>Data Prenotazione</th>
+            <th>Fascia oraria</th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach($courses  as $item)
+        <tr>
+            <td>{{ $item['nome_corso'] }}</td>
+            <td>{{ $item['numero_sala'] }}</td>
+            <td>{{ $item['stato_richiesta'] }}</td>
+            <td>{{ $item['data_prenotazione'] }}</td>
+            <td>{{ $item['fascia_oraria'] }}</td>
+            <td>
                 <form action="/course/{{ $item -> id }}" method="post">
-            @csrf 
-            @method('DELETE') 
-            <button type="submit" class="btn btn-danger">Cancella</button>
-        </form>
-                </td>
-                <td>
-                    <a href="/course/{{ $item -> id }}/edit" class="btn btn-primary">Modifica</a>
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+                    @csrf 
+                    @method('DELETE') 
+                    <button type="submit" class="btn btn-danger">Cancella</button>
+                </form>
+            </td>
+            <td>
+                <a href="/course/{{ $item -> id }}/edit" class="btn btn-primary">Modifica</a>
+            </td>
+         
+            
+        </tr>
+        @endforeach
+    </tbody>
+</table>
+
     @else
     <h2>Non ci sono Prenotazioni</h2>
     @endif

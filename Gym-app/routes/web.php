@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\CourseController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Redirect;
+use App\Models\Course;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,8 +35,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::resource('/course', App\Http\Controllers\CourseController::class)    ->middleware('auth');
-
-
+Route::patch('course/approve/{id}?id', [CourseController::class, 'approve'])->middleware('auth');
 
 
 
